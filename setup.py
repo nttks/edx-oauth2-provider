@@ -19,11 +19,11 @@ setup(
         'Framework :: Django',
     ],
     packages=['oauth2_provider'],
-    dependency_links=[
-        'http://github.com/edx/django-oauth2-provider/tarball/0.2.7-dev+edx.1#egg=django-oauth2-provider',
-    ],
     install_requires=[
         'django-oauth2-provider',
         'PyJWT==0.2.1'
+    ],
+    dependency_links=[
+        'git+https://github.com/edx/edx-oauth2-provider.git@v0.2.7-dev+edx#egg=django-oauth2-provider-0.2.7-dev+edx',
     ]
 )
