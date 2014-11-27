@@ -198,6 +198,10 @@ class ProtectedView(View):
 
         return super(ProtectedView, self).dispatch(request, *args, **kwargs)
 
+    def _bad_request(self, msg):
+        """ Return a 400 error with JSON content. """
+        return JsonResponse({'error': msg}, status=400)
+
 
 class UserInfoView(ProtectedView):
     """
@@ -262,9 +266,22 @@ class UserInfoView(ProtectedView):
         id_token = oidc.userinfo(access_token, scope_request, claims_request)
         return id_token.claims
 
-    def _bad_request(self, msg):
-        """ Return a 400 error with JSON content. """
-        return JsonResponse({'error': msg}, status=400)
+
+class TokenInfoView(ProtectedView, AccessTokenView):
+    """
+    Return JSON information on `access_token` used.
+
+    """
+
+    def get(self, request):
+        """
+        Return JSON information on `access_token` used.
+        """
+        access_token = self.access_token
+        response_data = super(TokenInfoView, self).access_token_response_data(access_token)
+        response_data['username'] = access_token.user.username
+        response_data['expires'] = access_token.expires.isoformat()
+        return JsonResponse(response_data)
 
 
 class JsonResponse(HttpResponse):

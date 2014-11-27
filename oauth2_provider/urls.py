@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls import patterns, url
 
-from oauth2_provider.views import Authorize, Redirect, Capture, AccessTokenView, UserInfoView
+from oauth2_provider.views import Authorize, Redirect, Capture, AccessTokenView, UserInfoView, TokenInfoView
 
 
 urlpatterns = patterns(
@@ -16,4 +16,5 @@ urlpatterns = patterns(
     url('^redirect/?$', login_required(Redirect.as_view()), name='redirect'),
     url('^access_token/?$', csrf_exempt(AccessTokenView.as_view()), name='access_token'),
     url('^user_info/?$', csrf_exempt(UserInfoView.as_view()), name='user_info'),
+    url('^token_info/?$', csrf_exempt(TokenInfoView.as_view()), name='token_info'),
 )
