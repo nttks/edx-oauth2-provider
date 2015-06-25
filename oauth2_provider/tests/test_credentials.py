@@ -22,11 +22,9 @@ CLIENT_SECRET = 'some_secret'
 # 'client_secret' is not used unless specified.
 AUTHENTICATION_TEST_DATA = [
     {
-        'success': True
     },
     {
         'username': EMAIL,
-        'success': True
     },
     {
         'password': PASSWORD + '_bad',
@@ -43,16 +41,13 @@ AUTHENTICATION_TEST_DATA = [
     },
     {
         'client_secret': CLIENT_SECRET,
-        'success': True
     },
     {
         'client_type': CONFIDENTIAL,
         'client_secret': CLIENT_SECRET,
-        'success': True
     },
     {
         'client_secret': CLIENT_SECRET + '_bad',
-        'success': True  # public clients should ignore the client_secret field
     },
     {
         'client_type': CONFIDENTIAL,
