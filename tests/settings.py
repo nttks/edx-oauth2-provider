@@ -1,5 +1,9 @@
 # Django settings for example project.
 import os
+from path import path
+
+############################# SET PATH INFORMATION #############################
+REPO_ROOT = path(__file__).abspath().dirname().dirname()
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -93,3 +97,14 @@ OAUTH_OIDC_USERINFO_HANDLERS = (
     'oauth2_provider.oidc.handlers.EmailHandler',
     'oauth2_provider.tests.handlers.TestHandler'
 )
+
+# Nose Test Runner
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+_REPORT_DIR = REPO_ROOT / 'reports'
+_REPORT_DIR.makedirs_p()
+
+NOSE_ARGS = [
+    '--id-file', REPO_ROOT / '.testids' / 'noseids',
+    '--xunit-file', _REPORT_DIR / 'nosetests.xml',
+]
