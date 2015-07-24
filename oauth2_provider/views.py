@@ -2,6 +2,7 @@
 Customized django-oauth2-provider views, aligned with the OpenID specification.
 
 """
+import logging
 import json
 
 from django.http import HttpResponse
@@ -20,6 +21,8 @@ from oauth2_provider.models import TrustedClient
 from oauth2_provider.backends import PublicPasswordBackend
 from oauth2_provider.forms import (AuthorizationRequestForm, AuthorizationForm,
                                    RefreshTokenGrantForm, AuthorizationCodeGrantForm)
+
+log = logging.getLogger(__name__)
 
 
 # pylint: disable=abstract-method
@@ -42,6 +45,15 @@ class Authorize(provider.oauth2.views.Authorize):
         form = AuthorizationForm(data)
         return form
 
+    def error_response(self, request, error, **kwargs):
+        log.warning(
+            'Authorize error [error_code: {error_code}, error_description: {error_description}]'.format(
+                error_code=error['error'] if 'error' in error else 'unknown',
+                error_description=error['error_description'] if 'error_description' in error else ''
+            )
+        )
+        return super(Authorize, self).error_response(request, error, **kwargs)
+
 
 # pylint: disable=abstract-method
 class AccessTokenView(provider.oauth2.views.AccessTokenView):
@@ -59,9 +71,14 @@ class AccessTokenView(provider.oauth2.views.AccessTokenView):
 
     """
 
-    # Add custom authentication provider, to support email as username.
-    authentication = (provider.oauth2.views.AccessTokenView.authentication +
-                      (PublicPasswordBackend, ))
+    # Allow only the following authentication backend
+    authentication = (
+        provider.oauth2.backends.BasicClientBackend,
+        provider.oauth2.backends.RequestParamsClientBackend,
+    )
+
+    # Allow only the following grant_type
+    grant_types = ['authorization_code', 'refresh_token']
 
     # The following grant overrides make sure the view uses our customized forms.
 
